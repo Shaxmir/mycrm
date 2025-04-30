@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Операции перевозки товаров</h2>
+<a href="{% url 'logistics:transport_add' %}">Добавить операцию</a>
+<table>
+    <thead>
+        <tr>
+            <th>Тип операции</th>
+            <th>Склад</th>
+            <th>Дата</th>
+            <th>Товары</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transport in transports %}
+        <tr>
+            <td>{{ transport.get_type_display }}</td>
+            <td>{{ transport.warehouse.name }}</td>
+            <td>{{ transport.date }}</td>
+            <td>
+                {% for transport_product in transport.transportproduct_set.all %}
+                    {{ transport_product.product.name }} — {{ transport_product.quantity }} шт.<br>
+                {% empty %}
+                    Нет товаров
+                {% endfor %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Нет данных</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

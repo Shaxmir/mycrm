@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+.env
+*.env
+
+# Django
+db.sqlite3
+/media/
+staticfiles/
+local_settings.py
+
+# Venv
+venv/
+env/
+ENV/
+.venv/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Node/Vue (если ты используешь Vue.js во фронтенде)
+node_modules/
+dist/
+*.local
+
+# MacOS
+.DS_Store
+
+# System
+Thumbs.db

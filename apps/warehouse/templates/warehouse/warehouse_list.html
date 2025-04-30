@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Склады</h2>
+<a href="{% url 'warehouse_add' %}">Добавить склад</a>
+<ul>
+    {% for warehouse in warehouses %}
+        <li>
+            <a href="{% url 'warehouse_detail' warehouse.pk %}">
+                {{ warehouse.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

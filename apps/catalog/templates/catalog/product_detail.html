@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ product.name }}</h1>
+
+{% if product.photo %}
+    <img src="{{ product.photo.url }}" alt="{{ product.name }}" width="300">
+{% endif %}
+
+<ul>
+    <li>Толщина: {{ product.thickness }}</li>
+    <li>Сорт: {{ product.grade }}</li>
+    <li>Формат: {{ product.format }}</li>
+    <li>Покрытие: {{ product.surface }}</li>
+    <li>Класс эмиссии: {{ product.emission_class }}</li>
+    <li>Листов в м³: {{ product.sheets_per_cubic_meter }}</li>
+    <li>Ед. измерения: {{ product.unit }}</li>
+    <li>Вес: {{ product.weight }}</li>
+    <li>Площадь: {{ product.area }}</li>
+</ul>
+<a href="{% url 'catalog:category_detail' product.category.id %}">← Назад в категорию</a>
+{% endblock %}

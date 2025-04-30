@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{{ warehouse.name }}</h2>
+  <p>{{ warehouse.address }}</p>
+
+  <h3>Остатки товаров</h3>
+  <a href="{% url 'stock_add' warehouse.id %}">
+    <button>Добавить остаток</button>
+  </a>
+
+  <table>
+    <tr>
+      <th>Товар</th>
+      <th>Количество</th>
+      <th>Резерв</th>
+      <th>Доступно</th>
+      <th>Действия</th>
+    </tr>
+    {% for stock in stocks %}
+    <tr>
+      <td>{{ stock.product.name }}</td>
+      <td>{{ stock.quantity }}</td>
+      <td>{{ stock.reserved }}</td>
+      <td>{{ stock.available }}</td>
+      <td>
+        <!-- Кнопка редактирования -->
+        <a href="{% url 'stock_edit' warehouse.id stock.product.id %}">Редактировать</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Нет данных</td></tr>
+    {% endfor %}
+  </table>
+{% endblock %}

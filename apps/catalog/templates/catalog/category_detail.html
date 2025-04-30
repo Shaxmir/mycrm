@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Категория: {{ category.name }}</h1>
+
+{% if category.parent %}
+    <p>Родительская категория: <a href="{% url 'catalog:category_detail' category.parent.id %}">{{ category.parent.name }}</a></p>
+{% endif %}
+
+<h2>Товары в этой категории:</h2>
+<ul>
+    {% for product in category.products.all %}
+        <li>
+            <a href="{% url 'catalog:product_detail' product.id %}">{{ product.name }}</a>
+        </li>
+    {% empty %}
+        <li>Нет товаров в этой категории</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'catalog:product_add' category.id %}">➕ Добавить товар</a>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Редактирование остатка товара</h2>
+  
+  <h3>Склад: {{ warehouse.name }}</h3>
+  <h4>Товар: {{ form.instance.product.name }}</h4>
+
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+  </form>
+  
+  <a href="{% url 'warehouse_detail' warehouse.id %}">Назад</a>
+{% endblock %}

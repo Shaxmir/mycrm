@@ -1,0 +1,12 @@
+<!-- catalog/product_add.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Добавить товар в категорию "{{ category.name }}"</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Добавить товар</button>
+</form>
+{% endblock %}
