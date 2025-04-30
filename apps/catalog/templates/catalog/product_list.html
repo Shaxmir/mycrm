@@ -6,12 +6,15 @@
 <ul>
     {% for product in products %}
         <li>
-            <a href="{% url 'catalog:product_detail' product.id %}">{{ product.name }} {{ product.thickness }} {{ product.grade }}</a>
+            <a href="{% url 'catalog:product_detail' product.id %}">
+                {{ product.name }} — {{ product.thickness }}{{ product.unit }}, {{ product.format }}, сорт {{ product.grade }}, покрытие {{ product.surface }}
+            </a>
         </li>
     {% empty %}
         <li>Нет товаров</li>
     {% endfor %}
 </ul>
+
 
 <a href="{% url 'catalog:product_add' category.id %}">➕ Добавить товар</a>
 {% endblock %}

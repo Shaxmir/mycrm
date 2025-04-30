@@ -26,7 +26,12 @@ def category_list(request):
 
 def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    return render(request, 'catalog/category_detail.html', {'category': category})
+    products = category.products.all()  # берём все товары, связанные с этой категорией
+    return render(request, 'catalog/category_detail.html', {
+        'category': category,
+        'products': products,
+    })
+
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
