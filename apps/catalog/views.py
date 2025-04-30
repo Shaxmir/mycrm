@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category
 from .forms import ProductForm, CategoryForm
+from apps.warehouse.models import Stock, Warehouse
 
 
 
@@ -16,6 +17,9 @@ def category_add(request):
         form = CategoryForm()
     return render(request, 'catalog/category_add.html', {'form': form})
 
+
+
+
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'catalog/category_list.html', {'categories': categories})
@@ -26,11 +30,15 @@ def category_detail(request, category_id):
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    return render(request, 'catalog/product_detail.html', {'product': product})
+    stock_data = Stock.objects.filter(product=product).select_related('warehouse')
+    return render(request, 'catalog/product_detail.html', {
+        'product': product,
+        'stock_data': stock_data,
+    })
 
 def product_add(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    
+
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
@@ -40,5 +48,5 @@ def product_add(request, category_id):
             return redirect('catalog:category_detail', category_id=category.id)
     else:
         form = ProductForm()
-    
+
     return render(request, 'catalog/product_add.html', {'form': form, 'category': category})
