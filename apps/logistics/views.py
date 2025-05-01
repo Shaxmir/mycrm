@@ -44,7 +44,7 @@ def transport_add(request):
                 elif transport.type == 'outgoing':
                     stock.quantity = max(stock.quantity - quantity, 0)
                 stock.save()
-            return redirect('transport_list')
+            return redirect('logistics:transport_list')
     else:
         form = TransportForm()
     categories = Category.objects.prefetch_related('products').all()

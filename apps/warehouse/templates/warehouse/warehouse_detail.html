@@ -5,7 +5,7 @@
   <p>{{ warehouse.address }}</p>
 
   <h3>Остатки товаров</h3>
-  <a href="{% url 'stock_add' warehouse.id %}">
+  <a href="{% url 'warehouse:stock_add' warehouse.id %}">
     <button>Добавить остаток</button>
   </a>
 
@@ -25,7 +25,7 @@
       <td>{{ stock.available }}</td>
       <td>
         <!-- Кнопка редактирования -->
-        <a href="{% url 'stock_edit' warehouse.id stock.product.id %}">Редактировать</a>
+        <a href="{% url 'warehouse:stock_edit' warehouse.id stock.product.id %}">Редактировать</a>
       </td>
     </tr>
     {% empty %}

@@ -20,7 +20,7 @@ def warehouse_add(request):
     form = WarehouseForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect('warehouse_list')
+        return redirect('warehouse:warehouse_list')
     return render(request, 'warehouse/warehouse_form.html', {'form': form})
 
 def warehouse_detail(request, pk):
@@ -38,14 +38,14 @@ def warehouse_detail(request, pk):
 
 def stock_add(request, warehouse_id):
     warehouse = get_object_or_404(Warehouse, id=warehouse_id)
-    
+
     if request.method == 'POST':
         form = StockForm(request.POST)
         if form.is_valid():
             stock = form.save(commit=False)
             stock.warehouse = warehouse
             stock.save()
-            return redirect(reverse('warehouse_detail', args=[warehouse.id]))
+            return redirect(reverse('warehouse:warehouse_detail', args=[warehouse.id]))
     else:
         form = StockForm()
 
@@ -55,13 +55,13 @@ def stock_add(request, warehouse_id):
 def stock_edit(request, warehouse_id, product_id):
     warehouse = get_object_or_404(Warehouse, id=warehouse_id)
     stock = get_object_or_404(Stock, warehouse=warehouse, product_id=product_id)
-    
+
     if request.method == 'POST':
         form = StockForm(request.POST, instance=stock)
         if form.is_valid():
             form.save()
-            return redirect('warehouse_detail', pk=warehouse.id)
+            return redirect('warehouse:warehouse_detail', pk=warehouse.id)
     else:
         form = StockForm(instance=stock)
-    
+
     return render(request, 'warehouse/stock_form.html', {'form': form, 'warehouse': warehouse})

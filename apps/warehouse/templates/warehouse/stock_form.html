@@ -2,7 +2,7 @@
 
 {% block content %}
   <h2>Редактирование остатка товара</h2>
-  
+
   <h3>Склад: {{ warehouse.name }}</h3>
   <h4>Товар: {{ form.instance.product.name }}</h4>
 
@@ -11,6 +11,6 @@
     {{ form.as_p }}
     <button type="submit">Сохранить</button>
   </form>
-  
-  <a href="{% url 'warehouse_detail' warehouse.id %}">Назад</a>
+
+  <a href="{% url 'warehouse:warehouse_detail' warehouse.id %}">Назад</a>
 {% endblock %}
