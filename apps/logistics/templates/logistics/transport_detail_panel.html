@@ -1,0 +1,20 @@
+<h3>{{ transport.get_type_display }}</h3>
+<p><strong>Дата:</strong> {{ transport.date }}</p>
+<p><strong>Склад:</strong> {{ transport.warehouse.name }}</p>
+
+<h4>Товары:</h4>
+<table>
+  <thead><tr><th>Название</th><th>Количество</th></tr></thead>
+  <tbody>
+    {% for item in products %}
+    <tr>
+      <td>
+        <a href="{% url 'logistics:product_card' item.product.pk %}" class="product-card-link" data-pk="{{ item.product.pk }}">
+            {{ item.product.name }} — {{ item.product.thickness }}{{ item.product.unit }}, {{ item.product.format }}, {{ item.product.grade }}, {{ item.product.surface }}
+          </a>
+      </td>
+      <td>{{ item.quantity }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

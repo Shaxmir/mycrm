@@ -1,0 +1,12 @@
+<!-- _product_card.html -->
+<a href="#" onclick="closePanel(); return false;">← Назад к операциям</a>
+<h3>{{ product.name }}</h3>
+<p><strong>Категория:</strong> {{ product.category.name }}</p>
+<p><strong>Толщина:</strong> {{ product.thickness }}</p>
+<p><strong>Ед. изм.:</strong> {{ product.unit }}</p>
+<p><strong>Формат:</strong> {{ product.format }}</p>
+<p><strong>Сорт:</strong> {{ product.grade }}</p>
+<p><strong>Покрытие:</strong> {{ product.surface }}</p>
+{% if product.photo %}
+<img src="{{ product.photo.url }}" alt="Фото товара" style="max-width: 100%;">
+{% endif %}

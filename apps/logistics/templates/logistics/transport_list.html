@@ -1,33 +1,141 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <h2>Операции перевозки товаров</h2>
 <a href="{% url 'logistics:transport_add' %}">Добавить операцию</a>
-<table>
+<div>
+  <button id="incoming-tab">Приход</button>
+  <button id="outgoing-tab">Расход</button>
+</div>
+
+<div id="incoming-list" class="transport-list">
+  <h3>Приход</h3>
+  <table>
     <thead>
-        <tr>
-            <th>Тип операции</th>
-            <th>Склад</th>
-            <th>Дата</th>
-            <th>Товары</th>
-        </tr>
+      <tr><th>Склад</th><th>Дата</th><th></th></tr>
     </thead>
     <tbody>
-        {% for transport in transports %}
+      {% for t in transports %}
+        {% if t.type == 'incoming' %}
         <tr>
-            <td>{{ transport.get_type_display }}</td>
-            <td>{{ transport.warehouse.name }}</td>
-            <td>{{ transport.date }}</td>
-            <td>
-                {% for transport_product in transport.transportproduct_set.all %}
-                    {{ transport_product.product.name }} — {{ transport_product.quantity }} шт.<br>
-                {% empty %}
-                    Нет товаров
-                {% endfor %}
-            </td>
+          <td>{{ t.warehouse.name }}</td>
+          <td>{{ t.date }}</td>
+          <td><button class="show-detail" data-id="{{ t.id }}">Посмотреть товар</button></td>
         </tr>
-        {% empty %}
-        <tr><td colspan="4">Нет данных</td></tr>
-        {% endfor %}
+        {% endif %}
+      {% endfor %}
     </tbody>
-</table>
+  </table>
+</div>
+
+<div id="outgoing-list" class="transport-list" style="display:none;">
+  <h3>Расход</h3>
+  <table>
+    <thead>
+      <tr><th>Склад</th><th>Дата</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for t in transports %}
+        {% if t.type == 'outgoing' %}
+        <tr>
+          <td>{{ t.warehouse.name }}</td>
+          <td>{{ t.date }}</td>
+          <td><button class="show-detail" data-id="{{ t.id }}">Посмотреть товар</button></td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Выезжающая панель -->
+<div id="side-panel" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 75%;
+  height: 100%;
+  background: white;
+  border-left: 1px solid #ccc;
+  overflow-y: auto;
+  padding: 20px;
+  z-index: 1000;
+">
+  <button onclick="closePanelCompletely()">Закрыть</button>
+  <div id="panel-content">Загрузка...</div>
+</div>
+
+<script>
+  document.getElementById("incoming-tab").onclick = () => {
+    document.getElementById("incoming-list").style.display = "block";
+    document.getElementById("outgoing-list").style.display = "none";
+  };
+
+  document.getElementById("outgoing-tab").onclick = () => {
+    document.getElementById("incoming-list").style.display = "none";
+    document.getElementById("outgoing-list").style.display = "block";
+  };
+
+  function closePanel() {
+    document.getElementById("side-panel").style.display = "none";
+  }
+
+
+  function closePanelCompletely() {
+  panelHistory = [];  // очищаем всю историю
+  document.getElementById("side-panel").style.display = "none";
+  document.getElementById("panel-content").innerHTML = ""; // сбрасываем содержимое
+}
+
+
+  let panelHistory = [];
+
+  function showInPanel(html) {
+  const panel = document.getElementById("panel-content");
+  if (panel.innerHTML.trim() !== '') {
+    panelHistory.push(panel.innerHTML); // сохраняем текущее содержимое
+  }
+  panel.innerHTML = html;
+  document.getElementById("side-panel").style.display = "block";
+}
+
+document.querySelectorAll(".show-detail").forEach(button => {
+  button.addEventListener("click", () => {
+    const id = button.getAttribute("data-id");
+
+    // очищаем панель
+    panelHistory = [];
+    document.getElementById("panel-content").innerHTML = "";
+
+    fetch(`/logistics/transport/${id}/detail/`)
+      .then(res => res.text())
+      .then(html => showInPanel(html));
+  });
+});
+
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("product-card-link")) {
+    e.preventDefault();
+    const pk = e.target.getAttribute("data-pk");
+
+
+    fetch(`/logistics/product/${pk}/card/`)
+      .then(res => res.text())
+      .then(html => showInPanel(html));
+  }
+});
+
+function closePanel() {
+  if (panelHistory.length > 0) {
+    const previous = panelHistory.pop();
+    document.getElementById("panel-content").innerHTML = previous;
+  } else {
+    document.getElementById("side-panel").style.display = "none";
+  }
+}
+
+
+
+</script>
 {% endblock %}
