@@ -6,7 +6,7 @@
 </head>
 <body>
   {% load static %}
-
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
   <header>
     <h1>CRM по продаже фанеры</h1>
     <nav>
@@ -30,79 +30,10 @@
       <!-- содержимое профиля подгрузится сюда -->
     </div>
   </div>
-  
-
-  <style>
-    .side-panel {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100%;
-      width: 50%;
-      max-width: 400px;
-      background: white;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.3);
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
-  
-    .side-panel.open {
-      transform: translateX(0);
-    }
-  
-    .side-panel-content {
-      padding: 20px;
-      height: 100%;
-      overflow-y: auto;
-      position: relative;
-    }
-  
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 20px;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
-  
   <script>
-    const profileLink = document.getElementById("profile-link");
-    const profilePanel = document.getElementById("profile-panel");
-    const profileContent = document.getElementById("profile-content");
-  
-    profileLink.addEventListener("click", function (e) {
-      e.preventDefault();
-      fetch("{% url 'users:profile_panel' %}")
-        .then(response => response.text())
-        .then(html => {
-          const container = document.createElement('div');
-          container.innerHTML = html;
-          const content = container.querySelector('.profile-content');
-          const currentContent = profileContent.querySelector('.profile-content');
-          if (currentContent) currentContent.remove();
-          profileContent.appendChild(content);
-          profilePanel.classList.add("open");
-        });
-    });
-  
-    // Кнопка ✖
-    document.getElementById("close-profile-panel").addEventListener("click", function () {
-      profilePanel.classList.remove("open");
-    });
-  
-    // Клик вне панели
-    document.addEventListener("click", function (e) {
-      if (profilePanel.classList.contains("open") &&
-          !profilePanel.contains(e.target) &&
-          e.target !== profileLink) {
-        profilePanel.classList.remove("open");
-      }
-    });
+    window.profileUrl = "{% url 'users:profile_panel' %}";
   </script>
+  <script src="{% static 'js/base.js' %}"></script>
   
 </body>
 </html>
