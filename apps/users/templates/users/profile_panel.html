@@ -1,0 +1,17 @@
+<div class="profile-content">
+    <h2>Профиль пользователя</h2>
+    <ul>
+      {% if user_obj.photo %}
+        <li><img src="{{ user_obj.photo.url }}" alt="Фото" width="100"></li>
+      {% endif %}
+      <li><strong>ФИО:</strong> {{ user_obj.last_name }} {{ user_obj.first_name }} {{ user_obj.middle_name }}</li>
+      <li><strong>Email:</strong> {{ user_obj.email }}</li>
+      <li><strong>Телефон:</strong> {{ user_obj.phone }}</li>
+      <li><strong>День рождения:</strong> {{ user_obj.birth_date }}</li>
+      <li><strong>Должность:</strong> {{ user_obj.position }}</li>
+      <li><strong>Подразделение:</strong> {{ user_obj.department }}</li>
+      <li><strong>Роль:</strong> {{ user_obj.get_role_display }}</li>
+    </ul>
+    <a href="{% url 'users:logout' %}">Выйти</a>
+  </div>
+  

@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'config.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -147,3 +148,11 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TEMPLATES[0]['DIRS'] = [os.path.join(BASE_DIR, 'templates')]
+
+
+
+AUTH_USER_MODEL = 'users.User'
+
+
+LOGIN_URL = 'users:login'
+

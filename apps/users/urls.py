@@ -1,6 +1,13 @@
 from django.urls import path
+from . import views
+
+app_name = 'users'
 
 urlpatterns = [
-    # Примеры:
-    # path('', views.catalog_main, name='catalog_main'),
+    path("login/", views.login_view, name="login"),
+    path("register/", views.register_view, name="register"),
+    path("logout/", views.logout_view, name="logout"),
+    path("profile/panel/", views.profile_panel, name="profile_panel"),
+    path('test-login/', views.test_manual_login),
+
 ]
