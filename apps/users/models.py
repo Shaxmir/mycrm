@@ -15,6 +15,7 @@ class User(AbstractUser):
     department = models.CharField("Подразделение", max_length=100, null=True, blank=True)
     position = models.CharField("Должность", max_length=100, null=True, blank=True)
 
+
     role = models.CharField(
         max_length=50,
         choices=[('admin', 'Администратор'), ('manager', 'Менеджер'), ('employee', 'Сотрудник')]
