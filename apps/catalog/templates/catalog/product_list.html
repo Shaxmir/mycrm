@@ -7,14 +7,15 @@
     {% for product in products %}
         <li>
             <a href="{% url 'catalog:product_detail' product.id %}">
-                {{ product.name }} — {{ product.thickness }}{{ product.unit }}, {{ product.format }}, сорт {{ product.grade }}, покрытие {{ product.surface }}
+                {{ product.name }} — {{ product.thickness }}{{ product.unit }}, {{ product.format }},
+                сорт {{ product.grade }}, покрытие {{ product.surface }},
+                артикул {{ product.sku }}, цена {{ product.sale_price }} ₽
             </a>
         </li>
     {% empty %}
         <li>Нет товаров</li>
     {% endfor %}
 </ul>
-
 
 <a href="{% url 'catalog:product_add' category.id %}">➕ Добавить товар</a>
 {% endblock %}

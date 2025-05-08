@@ -1,4 +1,3 @@
-<!-- catalog/product_add.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -6,7 +5,24 @@
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    <p>Название: {{ form.name }}</p>
+    <p>Толщина: {{ form.thickness }}</p>
+    <p>Сорт: {{ form.grade }}</p>
+    <p>Формат: {{ form.format }}</p>
+    <p>Поверхность: {{ form.surface }}</p>
+    <p>Класс эмиссии: {{ form.emission_class }}</p>
+    <p>Листов в кубометре: {{ form.sheets_per_cubic_meter }}</p>
+    <p>Единица измерения: {{ form.unit }}</p>
+    <p>Вес: {{ form.weight }}</p>
+    <p>Площадь: {{ form.area }}</p>
+    <p>Фото: {{ form.photo }}</p>
+    <p>Закупочная цена: {{ form.purchase_price }}</p>
+    <p>Цена продажи: {{ form.sale_price }}</p>
+    <p>Артикул: {{ form.sku }}</p>
+    <p>Штрихкод: {{ form.barcode }}</p>
+    <p>Минимальный остаток: {{ form.min_stock }}</p>
+    <p>Примечание: {{ form.note }}</p>
+
     <button type="submit">Добавить товар</button>
 </form>
 {% endblock %}
