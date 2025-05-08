@@ -22,8 +22,9 @@ def category_add(request):
 
 
 def category_list(request):
-    categories = Category.objects.all()
+    categories = Category.objects.filter(parent__isnull=True)
     return render(request, 'catalog/category_list.html', {'categories': categories})
+
 
 def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)

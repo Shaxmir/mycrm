@@ -11,22 +11,36 @@
     </p>
 {% endif %}
 
-<h2>Товары в этой категории:</h2>
-
-{% if category.products.all %}
+{% if category.subcategories.all %}
+    <h2>Подкатегории:</h2>
     <ul>
-        {% for product in category.products.all %}
+        {% for sub in category.subcategories.all %}
             <li>
-                <a href="{% url 'catalog:product_detail' product.id %}">
-                    {{ product.name }} {{ product.thickness }}{{ product.unit }},
-                    {{ product.format }}, сорт {{ product.grade }}, покрытие {{ product.surface }}
-                </a>
+                <a href="{% url 'catalog:category_detail' sub.id %}">{{ sub.name }}</a>
             </li>
         {% endfor %}
     </ul>
 {% else %}
-    <p>Нет товаров в этой категории</p>
+    <h2>Товары в этой категории:</h2>
+    {% if category.products.all %}
+        <ul>
+            {% for product in category.products.all %}
+                <li>
+                    <a href="{% url 'catalog:product_detail' product.id %}">
+                        {{ product.name }} {{ product.thickness }}{{ product.unit }},
+                        {{ product.format }}, сорт {{ product.grade }}, покрытие {{ product.surface }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет товаров в этой категории</p>
+    {% endif %}
+    <a href="{% url 'catalog:product_add' category.id %}">➕ Добавить товар</a>
 {% endif %}
-
-<a href="{% url 'catalog:product_add' category.id %}">➕ Добавить товар</a>
+{% if category.parent %}
+    <p><a href="{% url 'catalog:category_detail' category.parent.id %}">← Назад к {{ category.parent.name }}</a></p>
+{% else %}
+    <p><a href="{% url 'catalog:category_list' %}">← Назад к списку категорий</a></p>
+{% endif %}
 {% endblock %}

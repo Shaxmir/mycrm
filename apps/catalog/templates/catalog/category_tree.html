@@ -1,0 +1,10 @@
+{% for category in categories %}
+    <li>
+        <a href="{% url 'catalog:category_detail' category.id %}">{{ category.name }}</a>
+        {% if category.subcategories.all %}
+            <ul>
+                {% include 'catalog/category_tree.html' with categories=category.subcategories.all %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}

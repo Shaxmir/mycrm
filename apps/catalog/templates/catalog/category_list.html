@@ -2,21 +2,14 @@
 
 {% block content %}
 <h1>Категории</h1>
+
 <ul>
     {% for category in categories %}
         <li>
             <a href="{% url 'catalog:category_detail' category.id %}">{{ category.name }}</a>
-            {% if category.subcategories.all %}
-                <ul>
-                    {% for sub in category.subcategories.all %}
-                        <li>
-                            <a href="{% url 'catalog:category_detail' sub.id %}">{{ sub.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
         </li>
     {% endfor %}
 </ul>
+
 <a href="{% url 'catalog:category_add' %}">➕ Добавить категорию</a>
 {% endblock %}
