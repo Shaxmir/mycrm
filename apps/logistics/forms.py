@@ -5,9 +5,14 @@ from apps.warehouse.models import Warehouse
 from apps.catalog.models import Product
 
 class TransportForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['type'].empty_label = None  # <--- Вот это убирает --------
+
     class Meta:
         model = Transport
-        fields = ['type', 'warehouse']  # Тип операции (приход/расход) и склад
+        fields = ['type', 'warehouse']
+
 
 class TransportProductForm(forms.ModelForm):
     class Meta:

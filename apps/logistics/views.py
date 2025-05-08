@@ -5,9 +5,56 @@ from .models import Transport, TransportProduct
 from apps.warehouse.models import Stock, Warehouse
 from apps.catalog.models import Product
 from .forms import TransportForm, TransportProductForm
-from apps.catalog.models import Category
+from apps.catalog.models import Category, Product
 from django.db import transaction
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+
+@require_POST
+def create_product_api(request):
+    data = request.POST
+    name = data.get("name")
+    category_id = data.get("category")
+
+    if not name or not category_id:
+        return JsonResponse({"error": "Имя и категория обязательны"}, status=400)
+
+    category = Category.objects.get(id=category_id)
+
+    product = Product.objects.create(
+        name=name,
+        category=category,
+        photo = request.FILES.get("photo"),
+        thickness=data.get("thickness") or None,
+        grade=data.get("grade") or None,
+        format=data.get("format") or None,
+        surface=data.get("surface") or None,
+        emission_class=data.get("emission_class") or None,
+        sheets_per_cubic_meter=data.get("sheets_per_cubic_meter") or None,
+        unit=data.get("unit") or None,
+        weight=data.get("weight") or None,
+        area=data.get("area") or None,
+        purchase_price=data.get("purchase_price") or None,
+        sale_price=data.get("sale_price") or None,
+        sku=data.get("sku") or None,
+        barcode=data.get("barcode") or None,
+        min_stock=data.get("min_stock") or None,
+        note=data.get("note") or None,
+    )
+
+    return JsonResponse({
+        "id": product.id,
+        "name": product.name,
+        "thickness": str(product.thickness or ""),
+        "unit": product.unit or "",
+        "format": product.format or "",
+        "grade": product.grade or "",
+        "surface": product.surface or "",
+})
+
+
+
 
 def transport_list(request):
     transports = Transport.objects.all().order_by('-date')

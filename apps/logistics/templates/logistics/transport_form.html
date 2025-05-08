@@ -13,34 +13,81 @@
 
     <hr>
 
-    <div id="products-container">
-        <div class="product-form">
-            <label>Товар:</label>
-            <select name="product">
-                {% for category in categories %}
-                    <optgroup label="--- {{ category.name }} ---">
-                        {% for product in category.products.all %}
-                            <option value="{{ product.id }}">
-                                {{ product.name }}
-                                {% if product.thickness %}{{ product.thickness }} мм{% endif %}
-                                {% if product.format %} {{ product.format }}{% endif %}
-                                {% if product.grade %} {{ product.grade }}{% endif %}
-                                {% if product.surface %} {{ product.surface }}{% endif %}
-                                {% if product.unit %} {{ product.unit }}{% endif %}
-                            </option>
-                        {% endfor %}
-                    </optgroup>
-                {% endfor %}
-            </select>
-            <label>Количество:</label>
-            <input type="number" name="quantity" min="1" required>
-        </div>
-    </div>
+    <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
+        <thead style="background-color: #f0f0f0;">
+            <tr>
+                <th style="text-align: left; padding: 8px;">Товар</th>
+                <th style="text-align: left; padding: 8px;">Количество</th>
+            </tr>
+        </thead>
+        <tbody id="products-container">
+            <tr class="product-form">
+                <td style="padding: 8px;">
+                    <div style="display: flex; gap: 4px;">
+                        <select name="product" style="flex: 1;">
+                            {% for category in categories %}
+                                <optgroup label="--- {{ category.name }} ---">
+                                    {% for product in category.products.all %}
+                                        <option value="{{ product.id }}">
+                                            {{ product.name }}
+                                            {% if product.thickness %}{{ product.thickness }} мм{% endif %}
+                                            {% if product.format %} {{ product.format }}{% endif %}
+                                            {% if product.grade %} {{ product.grade }}{% endif %}
+                                            {% if product.surface %} {{ product.surface }}{% endif %}
+                                            {% if product.unit %} {{ product.unit }}{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                        </select>
+                        <button type="button" class="create-product-button" onclick="openNewProductModal(this)">➕</button>
+                    </div>
+                </td>
+                <td style="padding: 8px;">
+                    <input type="number" name="quantity" min="1" required style="width: 100%;">
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <button type="button" id="add-product">Добавить товар</button>
     <br><br>
     <button type="submit">Сохранить</button>
 </form>
+
+<!-- Модальное окно -->
+<dialog id="newProductModal" style="width: 600px;">
+    <form method="dialog" id="newProductForm" enctype="multipart/form-data">
+        <h3>Создать новый товар</h3>
+        <label>Категория:</label>
+        <select name="category" required style="width: 100%;">
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <p>Название: <input type="text" name="name" required style="width: 100%;"></p>
+        <p>Толщина: <input type="number" step="0.01" name="thickness" style="width: 100%;"></p>
+        <p>Сорт: <input type="text" name="grade" style="width: 100%;"></p>
+        <p>Формат: <input type="text" name="format" style="width: 100%;"></p>
+        <p>Поверхность: <input type="text" name="surface" style="width: 100%;"></p>
+        <p>Класс эмиссии: <input type="text" name="emission_class" style="width: 100%;"></p>
+        <p>Листов в кубометре: <input type="number" name="sheets_per_cubic_meter" step="0.01" style="width: 100%;"></p>
+        <p>Единица измерения: <input type="text" name="unit" style="width: 100%;"></p>
+        <p>Вес: <input type="number" name="weight" step="0.01" style="width: 100%;"></p>
+        <p>Площадь: <input type="number" name="area" step="0.01" style="width: 100%;"></p>
+        <p>Фото: <input type="file" name="photo" accept="image/*"></p>
+        <p>Закупочная цена: <input type="number" name="purchase_price" step="0.01" style="width: 100%;"></p>
+        <p>Цена продажи: <input type="number" name="sale_price" step="0.01" style="width: 100%;"></p>
+        <p>Артикул: <input type="text" name="sku" style="width: 100%;"></p>
+        <p>Штрихкод: <input type="text" name="barcode" style="width: 100%;"></p>
+        <p>Минимальный остаток: <input type="number" name="min_stock" style="width: 100%;"></p>
+        <p>Примечание: <textarea name="note" style="width: 100%;"></textarea></p>
+
+        <br>
+        <button type="submit">Создать</button>
+        <button type="button" onclick="document.getElementById('newProductModal').close()">Отмена</button>
+    </form>
+</dialog>
 
 <script>
 document.getElementById('add-product').addEventListener('click', function () {
@@ -48,6 +95,72 @@ document.getElementById('add-product').addEventListener('click', function () {
     const newBlock = container.children[0].cloneNode(true);
     newBlock.querySelectorAll('input').forEach(input => input.value = '');
     container.appendChild(newBlock);
+});
+
+let activeSelect = null;
+
+function openNewProductModal(button) {
+    activeSelect = button.closest('tr').querySelector("select[name='product']");
+    document.getElementById("newProductModal").showModal();
+}
+
+document.getElementById("newProductForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const form = event.target;
+    const modal = document.getElementById("newProductModal");
+
+    const formData = new FormData(form);
+
+    const response = await fetch("/logistics/api/create-product/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+        },
+        body: formData
+    });
+
+    if (!response.ok) {
+        alert("Ошибка при создании товара");
+        return;
+    }
+
+    const data = await response.json();
+
+    // 👇 Формируем красивую строку с параметрами товара
+    const label = [
+        data.name,
+        data.thickness ? data.thickness + " " + data.unit : "",
+        data.format,
+        data.grade,
+        data.surface
+    ].filter(Boolean).join(" ");
+
+    const option = new Option(label, data.id);
+    if (activeSelect) {
+        activeSelect.appendChild(option);
+        activeSelect.value = data.id;
+    }
+
+    modal.close();
+    form.reset();
+});
+
+function toggleCreateButtons() {
+    const typeSelect = document.getElementById("id_type");
+    const typeValue = typeSelect.value;
+    const show = typeValue !== "outgoing"; // outgoing = Расход
+
+    document.querySelectorAll(".create-product-button").forEach(btn => {
+        btn.style.display = show ? "inline-block" : "none";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const typeSelect = document.getElementById("id_type");
+    if (typeSelect) {
+        typeSelect.addEventListener("change", toggleCreateButtons);
+        toggleCreateButtons(); // сразу применить при загрузке
+    }
 });
 </script>
 {% endblock %}

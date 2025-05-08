@@ -7,6 +7,7 @@ from apps.warehouse.models import Stock, Warehouse
 
 
 
+
 def category_add(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)

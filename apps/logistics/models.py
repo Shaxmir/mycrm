@@ -7,12 +7,12 @@ class Transport(models.Model):
         ('incoming', 'Приход'),
         ('outgoing', 'Расход'),
     ]
-    
-    type = models.CharField(max_length=50, choices=TRANSPORT_TYPES)
+
+    type = models.CharField(max_length=50, choices=TRANSPORT_TYPES, default='incoming')
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     products = models.ManyToManyField(Product, through='TransportProduct')
-    
+
     def __str__(self):
         return f"{self.type} на склад {self.warehouse.name}"
 
