@@ -108,9 +108,21 @@ def transport_add(request):
             return redirect('logistics:transport_list')
     else:
         form = TransportForm()
+    # Получаем все родительские категории
+    parent_categories = Category.objects.filter(is_parent=True)
+
+    # Получаем все товары по категориям
+    categories_with_products = {}
+    for parent in parent_categories:
+        subcategories = parent.subcategories.all()
+        categories_with_products[parent] = {}
+        for subcategory in subcategories:
+            products = Product.objects.filter(category=subcategory)
+            categories_with_products[parent][subcategory] = products
     categories = Category.objects.prefetch_related('products').all()
     products = Product.objects.all()
     return render(request, 'logistics/transport_form.html', {
+        'categories_with_products': categories_with_products,
         'form': form,
         'products': Product.objects.all(),  # можно убрать, если больше не используется
         'categories': categories,

@@ -25,21 +25,29 @@
                 <td style="padding: 8px;">
                     <div style="display: flex; gap: 4px;">
                         <select name="product" style="flex: 1;">
-                            {% for category in categories %}
-                                <optgroup label="--- {{ category.name }} ---">
-                                    {% for product in category.products.all %}
-                                        <option value="{{ product.id }}">
-                                            {{ product.name }}
-                                            {% if product.thickness %}{{ product.thickness }} мм{% endif %}
-                                            {% if product.format %} {{ product.format }}{% endif %}
-                                            {% if product.grade %} {{ product.grade }}{% endif %}
-                                            {% if product.surface %} {{ product.surface }}{% endif %}
-                                            {% if product.unit %} {{ product.unit }}{% endif %}
-                                        </option>
+                            {% for parent_category, subcategories in categories_with_products.items %}
+                                <!-- Родительская категория (не кликабельная) -->
+                                <optgroup label="{{ parent_category.name }}">
+                                    {% for subcategory, products in subcategories.items %}
+                                        <!-- Подкатегория (не кликабельная) -->
+                                        <option disabled>{{ subcategory.name }}</option>
+
+                                        <!-- Товары под подкатегорией (кликабельные) -->
+                                        {% for product in products %}
+                                            <option value="{{ product.id }}">
+                                                ⮑ {{ product.name }}
+                                                {% if product.thickness %} {{ product.thickness }} мм{% endif %}
+                                                {% if product.format %} {{ product.format }}{% endif %}
+                                                {% if product.grade %} {{ product.grade }}{% endif %}
+                                                {% if product.surface %} {{ product.surface }}{% endif %}
+                                                {% if product.unit %} {{ product.unit }}{% endif %}
+                                            </option>
+                                        {% endfor %}
                                     {% endfor %}
                                 </optgroup>
                             {% endfor %}
                         </select>
+
                         <button type="button" class="create-product-button" onclick="openNewProductModal(this)">➕</button>
                     </div>
                 </td>
@@ -61,7 +69,7 @@
         <h3>Создать новый товар</h3>
         <label>Категория:</label>
         <select name="category" required style="width: 100%;">
-            {% for category in categories %}
+            {% for category in categories_with_products %}
                 <option value="{{ category.id }}">{{ category.name }}</option>
             {% endfor %}
         </select>
